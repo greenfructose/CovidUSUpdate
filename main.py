@@ -31,7 +31,7 @@ def getUpdate():
             if data[1].get_text() == "USA":
                 # Format the number by removing the +sign and all commas
                 numberStr = data[3].get_text()[1:].replace(",", "")
-                # Caste number string as int
+                # Cast number string as int
                 number = int(numberStr)
                 # Was getting multiple rows for this but should only be one, created this list to added all values
                 rowList.append(number)
@@ -43,10 +43,10 @@ if __name__ == '__main__':
     # Get config info from config.ini
     config = configparser.ConfigParser()
     config.read('config.ini')
-    account_sid = str(config['API']['account_sid'])
-    auth_token = str(config['API']['auth_token'])
-    receiver = str(config['sms']['receiver'])
-    sender = str(config['sms']['sender'])
+    account_sid = config['API']['account_sid']
+    auth_token = config['API']['auth_token']
+    receiver = config['sms']['receiver']
+    sender = config['sms']['sender']
     # Initialize Twilio client
     client = Client(account_sid, auth_token)
     # Variables to compare whether or not new cases have been added since last check
