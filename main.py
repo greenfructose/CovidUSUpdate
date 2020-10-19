@@ -18,26 +18,38 @@ def getUpdate():
     url = "https://www.worldometers.info/coronavirus/"
     req = requests.get(url, headers)
     soup = BeautifulSoup(req.content, 'html.parser')
+    # Get all table rows on page
     rows = soup.find_all('tr')
+    # Create list to add numbers of cases to
     rowList = []
+    # Iterate over rows, get table data for each row
     for row in rows:
         data = row.find_all('td')
+        # Some rows have no table data, so we must check for it
         if data:
+            # Check if this row is the row for USA
             if data[1].get_text() == "USA":
+                # Format the number by removing the +sign and all commas
                 numberStr = data[3].get_text()[1:].replace(",", "")
+                # Caste number string as int
                 number = int(numberStr)
+                # Was getting multiple rows for this but should only be one, created this list to added all values
                 rowList.append(number)
+    # Returns the first int in the list, as this is the correct value for new cases
     return rowList[0]
 
 
 if __name__ == '__main__':
+    # Get config info from config.ini
     config = configparser.ConfigParser()
     config.read('config.ini')
     account_sid = str(config['API']['account_sid'])
     auth_token = str(config['API']['auth_token'])
-    receiver = str(config['comms']['receiver'])
-    sender = str(config['comms']['sender'])
+    receiver = str(config['sms']['receiver'])
+    sender = str(config['sms']['sender'])
+    # Initialize Twilio client
     client = Client(account_sid, auth_token)
+    # Variables to compare whether or not new cases have been added since last check
     startCases = 0
     newCases = 0
     while True:
@@ -46,12 +58,15 @@ if __name__ == '__main__':
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
             print("The US has {} new cases as of {}".format(newCases, date_time))
+            # Create the SMS message to be sent
             message = client.messages.create(
                 to=receiver,
                 from_=sender,
                 body="As of {}, there are {} new Covid-19 cases in the US today.".format(date_time, newCases)
             )
+            # Send message and reset case counts
             print(message.sid)
             startCases = newCases
+        # Wait one minute before checking if new cases have been added
         time.sleep(60.0)
 
