@@ -43,10 +43,10 @@ def getUpdate():
                     deathNumber = 0
                 else:
                     deathNumber = int(deathStr)
-                # Was getting multiple rows for this but should only be one, created this list to added all values
+                # Was getting multiple rows for this but should only be one, created these lists to add all values
                 caseList.append(caseNumber)
                 deathList.append(deathNumber)
-    # Returns the new cases and new deaths as a list
+    # Returns the new cases and new deaths as a list, first item in each list is correct data
     newResults.append(caseList[0])
     newResults.append(deathList[0])
     return newResults
@@ -83,6 +83,6 @@ if __name__ == '__main__':
             # Send message and reset case counts
             print(message.sid)
             startCases = newCases
-        # Wait one minute before checking if new cases have been added
+        # Wait 10 minutes before checking if new cases have been added
         time.sleep(600.0)
 
