@@ -31,8 +31,11 @@ def getUpdate():
             if data[1].get_text() == "USA":
                 # Format the number by removing the +sign and all commas
                 numberStr = data[3].get_text()[1:].replace(",", "")
-                # Cast number string as int
-                number = int(numberStr)
+                # Check if numberStr is empty, Cast number string as int
+                if numberStr == "":
+                    number = 0
+                else:
+                    number = int(numberStr)
                 # Was getting multiple rows for this but should only be one, created this list to added all values
                 rowList.append(number)
     # Returns the first int in the list, as this is the correct value for new cases
