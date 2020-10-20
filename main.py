@@ -84,5 +84,5 @@ if __name__ == '__main__':
             print(message.sid)
             startCases = newCases
         # Wait 10 minutes before checking if new cases have been added
-        time.sleep(600.0)
+        time.sleep(1800.0)
 
