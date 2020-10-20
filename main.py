@@ -21,7 +21,9 @@ def getUpdate():
     # Get all table rows on page
     rows = soup.find_all('tr')
     # Create list to add numbers of cases to
-    rowList = []
+    caseList = []
+    deathList = []
+    newResults = []
     # Iterate over rows, get table data for each row
     for row in rows:
         data = row.find_all('td')
@@ -30,16 +32,24 @@ def getUpdate():
             # Check if this row is the row for USA
             if data[1].get_text() == "USA":
                 # Format the number by removing the +sign and all commas
-                numberStr = data[3].get_text()[1:].replace(",", "")
+                newCaseStr = data[3].get_text()[1:].replace(",", "")
+                deathStr = data[5].get_text()[1:].replace(",", "")
                 # Check if numberStr is empty, Cast number string as int
-                if numberStr == "":
-                    number = 0
+                if newCaseStr == "":
+                    caseNumber = 0
                 else:
-                    number = int(numberStr)
+                    caseNumber = int(newCaseStr)
+                if deathStr == "":
+                    deathNumber = 0
+                else:
+                    deathNumber = int(deathStr)
                 # Was getting multiple rows for this but should only be one, created this list to added all values
-                rowList.append(number)
-    # Returns the first int in the list, as this is the correct value for new cases
-    return rowList[0]
+                caseList.append(caseNumber)
+                deathList.append(deathNumber)
+    # Returns the new cases and new deaths as a list
+    newResults.append(caseList[0])
+    newResults.append(deathList[0])
+    return newResults
 
 
 if __name__ == '__main__':
@@ -53,23 +63,26 @@ if __name__ == '__main__':
     # Initialize Twilio client
     client = Client(account_sid, auth_token)
     # Variables to compare whether or not new cases have been added since last check
+    results = []
     startCases = 0
     newCases = 0
     while True:
-        newCases = getUpdate()
+        results = getUpdate()
+        newCases = results[0]
+        newDeaths = results[1]
         if newCases > startCases:
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
-            print("The US has {} new cases as of {}".format(newCases, date_time))
+            print("The US has {} new cases and {} new deaths as of {}".format(newCases, newDeaths, date_time))
             # Create the SMS message to be sent
             message = client.messages.create(
                 to=receiver,
                 from_=sender,
-                body="As of {}, there are {} new Covid-19 cases in the US today.".format(date_time, newCases)
+                body="As of {}, there are {} new Covid-19 cases in the US today and {} new Covid-19 deaths.".format(date_time, newCases, newDeaths)
             )
             # Send message and reset case counts
             print(message.sid)
             startCases = newCases
         # Wait one minute before checking if new cases have been added
-        time.sleep(60.0)
+        time.sleep(600.0)
 
