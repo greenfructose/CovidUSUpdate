@@ -70,7 +70,7 @@ if __name__ == '__main__':
         results = getUpdate()
         newCases = results[0]
         newDeaths = results[1]
-        if newCases > startCases:
+        if newCases != startCases:
             now = datetime.now()
             date_time = now.strftime("%H:%M:%S")
             print("The US has {} new cases and {} new deaths as of {}".format(newCases, newDeaths, date_time))
