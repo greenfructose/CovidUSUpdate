@@ -83,6 +83,6 @@ if __name__ == '__main__':
             # Send message and reset case counts
             print(message.sid)
             startCases = newCases
-        # Wait 10 minutes before checking if new cases have been added
+        # Wait 30 minutes before checking if new cases have been added
         time.sleep(1800.0)
 
